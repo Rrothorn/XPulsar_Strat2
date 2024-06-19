@@ -70,7 +70,7 @@ navbar= dbc.Navbar(
             dbc.Row([
                 dbc.Col([
                     dbc.NavItem(dbc.NavLink("Main", href="/", active=True), style = {'margin-left':'20px'}),
-                    dbc.NavItem(dbc.NavLink("Historical", href="#", active=True)),
+                    dbc.NavItem(dbc.NavLink("Historical", href="/historical", active=True)),
                     dbc.NavItem(dbc.NavLink('Description', href='/description', active=True)),
                 ], className= 'hstack gap-3'),  #hstaock is a horizontal placement of the links
             ], className="g-10"),  # Use className="g-0" to remove gutter spacing between columns
