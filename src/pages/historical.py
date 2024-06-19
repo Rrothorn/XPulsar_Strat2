@@ -43,12 +43,12 @@ background_img = 'linear-gradient(to left, rgba(0,0,0,1), rgba(4,104,125,0.9))'
 card_title_img = 'linear-gradient(to left, rgba(1,139,180,0.75), rgba(0,0,0,1))'
 
 # Define a function to create a titled card
-def create_titled_card(title, content, color):
+def create_titled_card(title, content, color, height=None):
     return dbc.Card(
         [
             dbc.CardHeader(title, style={'background-image': color, 'color': 'white'}),
             dbc.CardBody(content, style={})
-        ]
+        ], style={'height': height}
     )
 
 # Define the rounding function
@@ -316,6 +316,10 @@ def calculate_sharp(df):
     sharpe = Sharpe(df)
     return pd.Series({'Sharpe': sharpe})
 
+def calculate_drawdown(df):
+    dd = DrawDown(df)
+    return pd.Series({'DrawDown': dd})
+
 def datetime_to_quarter_str(date):
     quarter = (date.month - 1) // 3 + 1
     return f'Q{quarter}'
@@ -340,20 +344,61 @@ def generate_QStable(df):
     #Calculates table for Quarterly Sharpe per Year
     dfQ = df.resample('Q').agg({'pnl_plus':'sum'})
     dfQ['Sharpe'] = df['pnl_plus'].resample('Q').apply(calculate_sharp)
-    print(dfQ) 
     # Extract years and quarters
     dfQ['Year'] = dfQ.index.year
     dfQ.reset_index(inplace=True)
     dfQ['Quarter'] = dfQ['datetime'].apply(datetime_to_quarter_str)
-    print(dfQ['Year'])
- #   dfQ['pnl_plus'] = dfQ['pnl_plus'].map(lambda x: f"{x:.2%}")
     
     dftable = dfQ.pivot(index='Year', columns='Quarter', values='Sharpe')
     dftable.reset_index(inplace=True)
-    print(dftable)
 
     return dftable
 
+def generate_QDDtable(df):
+    #Calculate table for Quarterly Drawdown per year
+    dfQ = df.resample('Q').agg({'pnl_ac':'sum'})
+    dfQ['DrawDown'] = df['pnl_ac'].resample('Q').apply(calculate_drawdown)
+    # Extract years and quarters
+    dfQ['Year'] = dfQ.index.year
+    dfQ.reset_index(inplace=True)
+    dfQ['Quarter'] = dfQ['datetime'].apply(datetime_to_quarter_str)
+    print(dfQ)
+    dftable = dfQ.pivot(index='Year', columns='Quarter', values='DrawDown')
+    dftable.reset_index(inplace=True)
+    print(dftable)
+    return dftable    
+    
+
+
+def generate_violin(df):
+    df = df[df.pnl_plus != 0]
+    violin = px.violin(df, y='pnl_plus', box=True, points='all', title='Spread of Trading Profits')
+    violin.update_layout(
+        yaxis_title='Trading Profits',
+        xaxis_title='',
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='white')
+        )
+    return violin 
+
+def generate_histo(df):
+    df = df[df.pnl_plus != 0]
+    fig = px.histogram(df, x='pnl_plus', nbins=80, title='<b>Distribution of Trading Profits</b>')
+    fig.update_layout(
+                        plot_bgcolor= '#000000',
+                        paper_bgcolor = '#FFFFFF',
+                        font_color = '#025E70',
+                        font_family = colors_config['colors']['font'],
+                        margin = {'l':20, 'r':40, 't':50, 'b':10, 'pad':10},
+                        title = {'x':0.5, 'y':0.98, 'font':{'size':16}},
+                        yaxis = {'title':'', 'gridcolor':'#808080'},
+                        xaxis = {'title':'P/L', 'tickformat': '.1%', 'gridcolor':'#808080'},
+                        showlegend = False,
+                        bargap = 0.1,
+                        )  
+    fig.update_traces(marker_color='#177B90')
+    return fig
 
 #helper functions for metrics
 def Performance(pnl):
@@ -361,9 +406,18 @@ def Performance(pnl):
     return "{:.2%}".format(pnl.sum())
 def Sharpe(pnl):
     """ Calculate annualised Sharpe Ratio """
-    pnlD = pnl.resample('D').agg({'pnl_plus':'sum'})
+    # Resample the pnl series to daily frequency and sum the values for each day
+    pnlD = pnl.resample('D').sum()
+    
+    # Filter out days with zero profit/loss
     pnlD = pnlD[pnlD != 0]
-    sharpe = (252 * pnlD.sum()/ len(pnlD)) / (pnlD.std() * 252**0.5)
+    
+    # Calculate the daily return mean and standard deviation
+    daily_return_mean = pnlD.mean()
+    daily_return_std = pnlD.std()
+    
+    # Calculate the annualized Sharpe Ratio
+    sharpe = (daily_return_mean * 252) / (daily_return_std * (252 ** 0.5))
     return round(sharpe, 2)
 
 def WinRate(pnl):
@@ -472,12 +526,21 @@ layout = html.Div(
                                                            ], width = 6),
                                                        ]),
                                                    ]),                                           
-                                               card_title_img)
+                                               card_title_img),
+                    html.Br(),
+                    create_titled_card('Distribution Profits of Single Trades',
+                                       dcc.Graph(id = 'stripper',
+                                                 figure = generate_histo(df),
+                                                 style = {'height':'35vh'}
+                                                 ),
+                                       card_title_img,
+                                       height = '42vh'
+                                       )
                     ], width = 3),
                 dbc.Col([
                     create_titled_card('Performance', dcc.Graph(id='graph-1-2', figure = {}), card_title_img),
                     html.Br(),
-                    create_titled_card('Quarterly Overview Performance', dash_table.DataTable(
+                    create_titled_card('Quarterly Overview Growth of Capital', dash_table.DataTable(
                                                             id='table-1-2',
                                                             data=generate_QPtable(df).to_dict('records'),
                                                             columns=[{'name': col, 'id': col} for col in table1_columns],
@@ -490,10 +553,10 @@ layout = html.Div(
                                                             merge_duplicate_headers=True,
           #                                                  page_size = 12,
                                                             ), card_title_img), 
-                    html.Br(),
-                    create_titled_card('Quarterly Overview Sharpe', dash_table.DataTable(
+                    html.Div(style={'height':'2px'}),
+                    create_titled_card('Quarterly Overview Sharpe Ratio', dash_table.DataTable(
                                                             id='table-2-2',
-                                                            data=generate_QPtable(df).to_dict('records'),
+                                                            data=generate_QStable(df).to_dict('records'),
                                                             columns=[{'name': col, 'id': col} for col in table1_columns],
                                                             style_header= {'backgroundColor': '#0E4854', 'color': 'white', 'fontWeight': 'bold'},
                                                             style_table = {'borderRadius': '10px', 'border':'4px solid #ddd'},
@@ -504,6 +567,21 @@ layout = html.Div(
                                                             merge_duplicate_headers=True,
           #                                                  page_size = 12,
                                                             ), card_title_img), 
+                    html.Div(style={'height':'2px'}),
+                    create_titled_card('Quarterly Overview Max Drawdown', dash_table.DataTable(
+                                                            id='table-2-3',
+                                                            data=generate_QDDtable(df).to_dict('records'),
+                                                            columns=[{'name': col, 'id': col} for col in table1_columns],
+                                                            style_header= {'backgroundColor': '#0E4854', 'color': 'white', 'fontWeight': 'bold'},
+                                                            style_table = {'borderRadius': '10px', 'border':'4px solid #ddd'},
+                                                            style_cell = {
+                                                                'color': '#000000',
+                                                                'font-family':'sans-serif',
+                                                                },
+                                                            merge_duplicate_headers=True,
+          #                                                  page_size = 12,
+                                                            ), card_title_img), 
+                    
                     ], width=5),
 
                 dbc.Col([

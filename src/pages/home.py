@@ -299,9 +299,18 @@ def Performance(pnl):
     return "{:.2%}".format(pnl.sum())
 def Sharpe(pnl):
     """ Calculate annualised Sharpe Ratio """
-    pnlD = pnl.resample('D').agg({'pnl_plus':'sum'})
+    # Resample the pnl series to daily frequency and sum the values for each day
+    pnlD = pnl.resample('D').sum()
+    
+    # Filter out days with zero profit/loss
     pnlD = pnlD[pnlD != 0]
-    sharpe = (252 * pnlD.sum()/ len(pnlD)) / (pnlD.std() * 252**0.5)
+    
+    # Calculate the daily return mean and standard deviation
+    daily_return_mean = pnlD.mean()
+    daily_return_std = pnlD.std()
+    
+    # Calculate the annualized Sharpe Ratio
+    sharpe = (daily_return_mean * 252) / (daily_return_std * (252 ** 0.5))
     return round(sharpe, 2)
 
 def WinRate(pnl):
