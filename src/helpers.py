@@ -272,7 +272,7 @@ def generate_last20days(df):
                         margin = {'l':20, 'r':40, 't':50, 'b':10, 'pad':10},
                         title = {'x':0.5, 'y':0.98, 'font':{'size':16}},
                         yaxis = {'title':'', 'gridcolor':'#808080'},
-                        xaxis = {'title':'P/L', 'tickformat': '.1%', 'gridcolor':'#808080'},
+                        xaxis = {'title':'P/L', 'tickformat': '.2%', 'gridcolor':'#808080'},
                         showlegend = False,
                         )  
     bars.update_traces(marker_color='#177B90')
