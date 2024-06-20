@@ -6,29 +6,21 @@ Created on Mon Jun 17 09:14:11 2024
 """
 
 # =============================================================================
-# This APP is a DASHBOARD to present the performance and performance metrics of a Machine Learning strategy on a portfolio of US stocks.
-# The dashboard is multipage and its content has 5 pages
+# This APP is a DASHBOARD to present the performance and performance metrics of a Machine Learning strategy on the Nasdaq-100.
+# The dashboard is multipage and its content has 3 pages
 #  1: the 2024 performance
-#  2: the 2018-2023 performance
-#  3: the individual stock contributions to the 2024 performance
-#  4: a description page summarising the trading strategy
-#  5: a page where you can download daily reports
+#  2: the 2022-2023 performance
+#  3: a description page summarising the trading strategy
 # Technically the dashboard is created as:
 #     |-- SRC /  app.py
 #                config.py
-#                plots_generator.py
-#                metrics_generator.py
-#                report_creator.py
+#                helpers.py
 #               | -- PAGES     /   home.py
 #                                  historical.py
-#                                  stock.py
 #                                  description.py
-#                                  report.py
 #               |-- ASSETS     /   logo.png
 #                                  custom.css
-#     |-- DATA / DC_2024trades.csv
-#                XGB_trades18-23.csv 
-#                DC_reports24.csv
+#     |-- DATA / dataDT_daash.csv
 # =============================================================================
 
 

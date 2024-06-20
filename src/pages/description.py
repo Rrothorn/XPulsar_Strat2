@@ -69,10 +69,10 @@ layout =  html.Div(style={'background-image': background_img, 'height': '100vh'}
                                               style={'color': '#FFFFFF'}
                                               ),
                                        html.Hr(),
-                                       html.P('Adjust the trailing stop:',
+                                       html.P('Adjust Cutoff to Pause Trading:',
                                               className='card-text',
                                               style={'color': '#FFFFFF', 'font':'bold'}),                                              
-                                       html.P('Once we have taken a position, a stop-loss price will mitigate the risk. If the position becomes profitable the stop-loss price will follow the direction of the position. The value chosen in the slider determines how closely the stop is trailing the price. The smaller the value the tighter the stop.',
+                                       html.P('As this strategy is attempting to capture moves out of the established range, statistically after a day with a larger change, it is quite likely to have a day of trading within a range. These days have been identified as poorly performing days. Adjusting this parameter will prevent trading on certain days. The higher the cutoff, the less days we are filtering out.',
                                               className='card-text',
                                               style={'color': '#95D7E0'}),
                                        html.Hr(),
