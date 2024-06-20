@@ -148,7 +148,7 @@ layout = html.Div(
                     html.Br(),
                     create_titled_card('Quarterly Overview Growth of Capital', dash_table.DataTable(
                                                             id='table-1-2',
-                                                            data=hl.generate_QPtable(df).to_dict('records'),
+                                                            data=hl.generate_QPtable(dff).to_dict('records'),
                                                             columns=[{'name': col, 'id': col} for col in table1_columns],
                                                             style_header= {'backgroundColor': '#0E4854', 'color': 'white', 'fontWeight': 'bold'},
                                                             style_table = {'borderRadius': '10px', 'border':'4px solid #ddd'},

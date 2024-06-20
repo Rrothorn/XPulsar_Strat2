@@ -116,7 +116,7 @@ layout = html.Div(
                                                       )                                      
                                                   ), card_title_img),
                     ], width = 3),
-                dbc.Col(create_titled_card('Performance', dcc.Graph(id='graph-1', figure = {}), card_title_img), width=6),
+                dbc.Col(create_titled_card('YTD Performance', dcc.Graph(id='graph-1', figure = {}), card_title_img), width=6),
                 dbc.Col(create_titled_card('KPI',
                                            html.Div([
                                                dbc.Row([

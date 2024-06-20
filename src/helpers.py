@@ -218,7 +218,7 @@ def generate_line_shaded(df):
         plot_bgcolor='#000000',
         paper_bgcolor='#FFFFFF',
         font_color='#025E70',
-        font_family='Lato',  # Replace with your font family if different
+        font_family='verdana',  # Replace with your font family if different
         margin={'l':20, 'r':40, 't':50, 'b':10, 'pad':10},
         title={'text':'<b>Growth of Capital</b>', 'x':0.5, 'y':0.98, 'font':{'size':16}},
         xaxis={'title':'', 'showgrid':False},
