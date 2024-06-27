@@ -253,14 +253,13 @@ def update_page1(y2022, y2023, total):
         end_date = '31-12-2023'
         plot_title = 'Total' 
 
-  #  df = df
     dfc = dff[(dff.index >= start_date) & (dff.index <= end_date)]
     
     dfc['cr_ac'] = dfc.pnl_ac.cumsum() + 1
     dfc['pnl_plus'] = dfc.pnl_ac * dfc.cr_ac
     dfc['cr_plus'] = dfc.pnl_plus.cumsum() + 1
-    
- #   figln = generate_performance_plot(df)
+
+    # Generating elements on page    
     figln = hl.generate_line_shaded(dfc)  
   
     performance = hl.Performance(dfc.pnl_plus)
