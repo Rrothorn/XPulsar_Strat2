@@ -241,6 +241,7 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
         start_hour = 7
         end_hour = 15
     
+    # set timeframe and recalculate pnls
     dfc = dff[(dff.index.hour >= start_hour) & (dff.index.hour <= end_hour)]
     
     dfc['pnl_ac'][dfc.pnl != 0] = dfc.pnl - cost - slip
