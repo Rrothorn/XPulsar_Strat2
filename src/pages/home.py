@@ -17,6 +17,8 @@ import plotly.graph_objects as go
 
 #from config import colors_config, card_config
 import helpers as hl
+from config import colors_config
+
 
 # =============================================================================
 # This is the first page the user will see.
@@ -34,22 +36,31 @@ dash.register_page(__name__, path='/')
 #fname = 'dataDT_daash.csv'
 fname = 'dataDTmix.csv'
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
+df_l = df.copy()
 df = df[df.index > '01-01-2024']
 
 
-# some definitions for readability
-table1_columns = ['date', 'B/S', 'open', 'close', 'Profit']
 
-background_img = 'linear-gradient(to left, rgba(0,0,0,1), rgba(4,104,125,0.9))'
+# some definitions for readability
+table1_columns = ['date', 'B/S', 'Profit']
+
+background_img = 'linear-gradient(to left, rgba(0,0,0,1), rgba(4,104,125,1))'
 card_title_img = 'linear-gradient(to left, rgba(1,139,180,0.75), rgba(0,0,0,1))'
 
+kpi_style = {'background-image': background_img,
+             'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+             }
+
 # Define a function to create a titled card
-def create_titled_card(title, content, color):
+def create_titled_card(title, content, color, height=None):
     return dbc.Card(
         [
             dbc.CardHeader(title, style={'background-image': color, 'color': 'white'}),
-            dbc.CardBody(content, style={})
-        ]
+            dbc.CardBody(content, style={'height': height})
+        ], style={'height':height,
+         #         'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+                  'boxShadow': '0 4px 8px 0 rgba(255, 255, 255, 0.15), 0 6px 20px 0 rgba(255, 255, 255, 0.2)',
+                  }
     )
 
 
@@ -69,7 +80,7 @@ layout = html.Div(
                 dbc.Col([
                     create_titled_card('Adjustable Parameter Sliders',
                                            html.Div([
-                                                html.H5("Adjust Cutoff to Pause Trading"),
+                                                html.H6("Adjust Cutoff to Pause Trading"),
                                                 dcc.Slider(
                                                     id='stop-slider',
                                                     min=0,
@@ -79,7 +90,7 @@ layout = html.Div(
                                        #             marks={i: str(i) for i in range(0.15, 0.4)},
                                                     ),
                                                 html.Hr(),
-                                                html.H5("Adjust Execution Cost (bps)"),
+                                                html.H6("Adjust Execution Cost (bps)"),
                                                 dcc.Slider(
                                                     id='cost-slider',
                                                     min=0,
@@ -87,8 +98,8 @@ layout = html.Div(
                                                     step=0.1,
                                                     value=0.1,
                                                     ), 
-                                                html.Hr(),
-                                                html.H5("Adjust Slippage"),
+ #                                               html.Hr(),
+                                                html.H6("Adjust Slippage"),
                                                 dcc.Slider(
                                                     id='slip-slider',
                                                     min=0,
@@ -108,7 +119,7 @@ layout = html.Div(
                                                           options=[
                                                               {'label': 'Full 23h', 'value': 'opt1'},
                                                               {'label': 'US + EU session', 'value': 'opt2'},
-                                                              {'label': 'US session', 'value': 'opt3'}
+ #                                                             {'label': 'US session', 'value': 'opt3'}
                                                               ],
                                                           value='opt1',  # default value
                                                           labelStyle={'display': 'inline-block', 'margin-left':'3px', 'margin-right': '20px'}
@@ -116,69 +127,111 @@ layout = html.Div(
                                                       ]
                                                       )                                      
                                                   ), card_title_img),
-                    ], width = 3),
-                dbc.Col(create_titled_card('YTD Performance', dcc.Graph(id='graph-1', figure = {}), card_title_img), width=6),
-                dbc.Col(create_titled_card('KPI',
-                                           html.Div([
-                                               dbc.Row([
-                                                   dbc.Col([
-                                                       dbc.Card([
-                                                           html.H3(id = 'perf'),
-                                                           html.H6('Performance', style={'color':'#1F8094'}),
-                                                           html.Br(),                                                           
-                                                           html.H3(id = 'winrate'),
-                                                           html.H6('% Winning Trades', style={'color':'#1F8094'}),
-                                                           html.Br(),
-                                                           html.H3(id = 'windays'),
-                                                           html.H6('% Winning Days', style={'color':'#1F8094'}),
-                                                           html.Br(),
-                                                           html.H3(id = 'winmonths'),
-                                                           html.H6('% Winning Months', style={'color':'#1F8094'}),
-                                                           html.Br(),
-                                                           html.H3(id = 'trades'),
-                                                           html.H6('Avg Trades per day', style={'color':'#1F8094'}),
-                                                           ], style = {'height':'28rem'}),
-                                                       ], width = 6),
-                                                   dbc.Col([
-                                                       dbc.Card([
-                                                           html.H3(id ='sharpe'),
-                                                           html.H6('Sharpe Ratio', style={'color':'#1F8094'}),
-                                                           html.Br(), 
-                                                           html.H3(id = 'pr'),
-                                                           html.H6('Profit Ratio', style={'color':'#1F8094'}),
-                                                           html.Br(),
-                                                           html.H3(id = 'dd'),
-                                                           html.H6('Max Drawdown', style={'color':'#1F8094'}),
-                                                           html.Br(),
-                                                           html.H3(id = 'bestday'),
-                                                           html.H6('Best Day', style={'color':'#1F8094'}),
-                                                           html.Br(),
-                                                           html.H3(id = 'worstday'),
-                                                           html.H6('Worst Day', style={'color':'#1F8094'}),
-                                                           ], style = {'height':'28rem'})
-                                                       ], width = 6),
-                                                   ]),
-                                               ]),                                           
-                                           card_title_img), width = 3),
+                    html.Br(),
+                    create_titled_card('Last Trades', dash_table.DataTable(
+                                                            id='table-1',
+                                                            data=hl.generate_table(df).to_dict('records'),
+                                                            columns=[{'name': col, 'id': col} for col in table1_columns],
+                                                            style_header= {'backgroundColor': '#0E4854', 'color': 'white', 'fontWeight': 'bold'},
+                                                            style_table = {'borderRadius': '10px', 'border':'4px solid #ddd'},
+                                                            style_cell = {
+                                                                'color': '#000000',
+                                                                'font-family':'sans-serif',
+                                                                },
+                                                            page_size = 7,
+                                                            ), card_title_img),
+                    ], width = 2),
+                dbc.Col([
+                    dbc.Row([
+                        dbc.Col(create_titled_card('KPI',
+                                                   html.Div([
+                                                       dbc.Row([
+                                                           dbc.Col(width=1),
+                                                           dbc.Col([                                
+                                                               dbc.Card([
+                                                                   html.H2(id = 'perf', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Performance', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               dbc.Card([
+                                                                   html.H2(id = 'winrate', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('% Winning Trades', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               
+                                                               ], width = 2),
+                                                           dbc.Col([
+                                                               dbc.Card([
+                                                                   html.H2(id = 'sharpe', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Sharpe Ratio', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               dbc.Card([
+                                                                   html.H2(id = 'windays', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('% Winning Days', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               ], width = 2),
+                                                           dbc.Col([
+                                                               dbc.Card([
+                                                                   html.H2(id = 'pr', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Profit Ratio', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               dbc.Card([
+                                                                   html.H2(id = 'winmonths', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('% Winning Months', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   ], style = kpi_style),
+                                                               ], width = 2),
+                                                           dbc.Col([
+                                                               dbc.Card([
+                                                                   html.H2(id = 'dd', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Max DrawDown', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               dbc.Card([
+                                                                   html.H2(id = 'bestday', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Best Day', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               ], width = 2),
+                                                           dbc.Col([
+                                                               dbc.Card([
+                                                                   html.H2(id = 'trades', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Avg Trades per day', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                               dbc.Card([
+                                                                   html.H2(id = 'worstday', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H6('Worst Day', style={'color':'#FFFFFF', 'margin-left':'10px'}),
+                                                                   html.Br(),
+                                                                   ], style = kpi_style),
+                                                               html.Br(),
+                                                           ], width = 2),
+                                                           ]),
+                                                       ]),                                           
+                                                   card_title_img), width = 12),
+                
+                        ]),
+                    html.Br(),
+                    dbc.Row([
+                        dbc.Col(create_titled_card('YTD Performance', dcc.Graph(id='graph-1', figure = {}), card_title_img), width=8),
+                        dbc.Col(create_titled_card('Performance Targets', dcc.Graph(id= 'graph-gauge', figure = {}), card_title_img), width=4),
+                        ])
+                    
+                    ], width=6),
+                dbc.Col([
+                    create_titled_card('Weekly performance', dcc.Graph(id='graph-2', figure = {}, style={'height':'100%'}), card_title_img, height='20rem'),
+                    html.Br(),
+                    create_titled_card('Last 20 Tradingdays performance', dcc.Graph(id='graph-3', figure = {}), card_title_img),                         
+                    ], width=4),
                 ], className="equal-height", style={"margin-right": "15px", "margin-left": "15px"}),
-            # ROW 2
-            html.Br(),
-            dbc.Row([
-                dbc.Col(create_titled_card('Weekly performance', dcc.Graph(id='graph-2', figure = {}), card_title_img), width=4),
-                dbc.Col(create_titled_card('Last 20 days', dcc.Graph(id='graph-3', figure = {}), card_title_img), width=4),
-                dbc.Col(create_titled_card('Last Trades', dash_table.DataTable(
-                                                                            id='table-1',
-                                                                            data=hl.generate_table(df).to_dict('records'),
-                                                                            columns=[{'name': col, 'id': col} for col in table1_columns],
-                                                                            style_header= {'backgroundColor': '#0E4854', 'color': 'white', 'fontWeight': 'bold'},
-                                                                            style_table = {'borderRadius': '10px', 'border':'4px solid #ddd'},
-                                                                            style_cell = {
-                                                                                'color': '#000000',
-                                                                                'font-family':'sans-serif',
-                                                                                },
-                                                                            page_size = 12,
-                                                                            ), card_title_img), width=4),
-                ], style={"margin-right": "15px", "margin-left": "15px"}),  # CLOSING ROW 2
             ], style = {'background-image': background_img,}  # Specify the path to your image file
             ) # CLOSING CARDBODY
         ), # CLOSING CARD
@@ -208,6 +261,7 @@ layout = html.Div(
      Output('graph-2', 'figure'),
      Output('graph-3', 'figure'),
      Output('table-1', 'data'),
+     Output('graph-gauge', 'figure'),
      ],
      [
      Input('stop-slider', 'value'),
@@ -268,5 +322,7 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     
     table = hl.generate_table(dfc)
     
+    multi_gauge = hl.generate_gauge_multimodel(dfc)
+    
     # the order of returns should be the same as the order of Output in the callbacks.
-    return [figln, performance, wr, wd, wm, avgtr, sharpe, pr, dd, bestday, worstday, bars, bars2, table.to_dict('records')]
+    return [figln, performance, wr, wd, wm, avgtr, sharpe, pr, dd, bestday, worstday, bars, bars2, table.to_dict('records'), multi_gauge]

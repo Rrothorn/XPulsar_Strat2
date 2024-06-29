@@ -7,6 +7,7 @@ Created on Thu Jun 20 11:16:16 2024
 
 import plotly.graph_objects as go
 import plotly.express as px
+from plotly.subplots import make_subplots
 
 import pandas as pd
 import numpy as np
@@ -329,8 +330,7 @@ def generate_table(df):
     dfc['close'][dfc.sell_open == 0] = dfc.buy_close
     dfc['date'] = dfc.index.date
     
-    dftable = dfc[['date','B/S', 'open', 'close', 'pnl_plus']]
-    dftable['close'] = dftable['close'].apply(round_to_quarter)
+    dftable = dfc[['date','B/S', 'pnl_plus']]
     dftable['pnl_plus'] = dftable['pnl_plus'].map(lambda x: f"{x:.2%}")
     dftable = dftable.rename(columns = {'pnl_plus':'Profit'})
     dftable = dftable.sort_index(ascending=False)
@@ -381,3 +381,161 @@ def generate_QDDtable(df):
     dftable.reset_index(inplace=True)
     print(dftable)
     return dftable    
+
+def generate_gauge_yoytarget_model(dfg):
+    year = 2024
+    target = 0.36
+    
+    #get current and previous years sales
+    start_date = str(year) + '-01-01'
+    end_date = str(year) + '-12-31'   
+    dfc = dfg[(dfg.index >= start_date) & (dfg.index <= end_date)]
+    cur_profit = dfc['pnl_plus'].sum() 
+    
+    profit_target = target 
+    
+    if cur_profit/profit_target < 0.75:
+        bar_color = '#2CC3E3'
+    elif cur_profit/profit_target > 1.2:
+        bar_color = '#155765'
+    else:
+        bar_color = '#209BB5'
+    
+    #create a Gauge Graph 
+    fig_target = go.Indicator(
+       domain = {'x': [0, 1], 'y': [0, 0.8]},
+       value = cur_profit,
+       number={'valueformat': '.2%'},
+       mode = "gauge+number",   # also including the delta to show how far off the target we are
+#       title = {'text': f'{figln_title} Sales vs Target'},
+       delta = {'reference':  profit_target, 'valueformat': '.2%'},
+       gauge = {'axis': {'range': [None, 1.35 * target], 'tickformat':',.2%', 'tickvals':[0,0.12,0.36,0.48]},
+                'bar': {'color': bar_color},  
+        #        'shape':'angular',
+                'steps' : [{'range': [0, 1.35 * target], 'color': '#FFFFFF'},],
+                'threshold' : {'line': {'color': '#000000', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
+                },
+       )
+  
+
+    return fig_target
+
+def generate_gauge_qoqtarget_model(dfg):
+    
+    #get current and previous years sales
+    start_date = '2024-03-31'
+    end_date =  '2024-07-01'   
+    dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
+    cur_profit = dfc['pnl_plus'].sum() 
+    
+    profit_target = 0.09 
+    
+    if cur_profit/profit_target < 0.75:
+        bar_color = '#2CC3E3'
+    elif cur_profit/profit_target > 1.2:
+        bar_color = '#155765'
+    else:
+        bar_color = '#209BB5'
+    
+    #create a Gauge Graph 
+    fig_target = go.Indicator(
+       domain = {'x': [0, 1], 'y': [0, 0.8]},
+       value = cur_profit,
+       number={'valueformat': '.2%'},
+       mode = "gauge+number",   # also including the delta to show how far off the target we are
+#       title = {'text': f'{figln_title} Sales vs Target'},
+       delta = {'reference':  profit_target, 'valueformat': '.2%'},
+       gauge = {'axis': {'range': [None, profit_target * 1.35], 'tickformat':',.2%', 'tickvals':[0,0.03,0.09,0.12]},
+                'bar': {'color': bar_color},  
+        #        'shape':'angular',
+                'steps' : [{'range': [0, profit_target * 1.35], 'color': '#FFFFFF'},],
+                'threshold' : {'line': {'color': 'black', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
+                },
+       )
+  
+
+    return fig_target
+
+def generate_gauge_momtarget_model(dfg):
+    
+    #get current and previous years sales
+    start_date = '2024-05-31'
+    end_date =  '2024-07-01'   
+    dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
+    cur_profit = dfc['pnl_plus'].sum() 
+    
+    profit_target = 0.03
+    
+    if cur_profit/profit_target < 0.75:
+        bar_color = '#2CC3E3'
+    elif cur_profit/profit_target > 1.2:
+        bar_color = '#155765'
+    else:
+        bar_color = '#209BB5'
+    
+    #create a Gauge Graph 
+    fig_target = go.Indicator(
+       domain = {'x': [0, 1], 'y': [0, 0.8]},
+       value = cur_profit,
+       number={'valueformat': '.2%'},
+       mode = "gauge+number",   # also including the delta to show how far off the target we are
+#       title = {'text': f'{figln_title} Sales vs Target'},
+       delta = {'reference':  profit_target, 'valueformat': '.2%'},
+       gauge = {'axis': {'range': [None, profit_target * 1.35], 'tickformat':',.2%', 'tickvals':[0,0.01,0.03,0.04]},
+                'bar': {'color': bar_color},  
+        #        'shape':'angular',
+                'steps' : [{'range': [0, profit_target * 1.35], 'color': '#FFFFFF'},],
+                'threshold' : {'line': {'color': 'black', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
+                },
+       )
+  
+
+    return fig_target
+
+def generate_gauge_multimodel(df):
+    subtitles = [
+                'Month',           
+                'Quarter',
+                'Year',
+                ]
+    # Create a subplot figure with 2x2 layout, specifying the type as 'indicator'
+    multi_gauge = make_subplots(
+        rows=3, cols=1,
+        subplot_titles=(
+            subtitles
+            ),
+        specs=[
+            [{'type': 'indicator'}],
+            [{'type': 'indicator'}],
+            [{'type': 'indicator'}],
+            ],
+        vertical_spacing=0.2  # Increase vertical spacing between subplots
+    )
+    
+    # Add gauge plots to the subplots
+    for i in range(3):
+        row = i+1
+        col = 1 
+        if row == 1:
+            gauge = generate_gauge_momtarget_model(df)
+        elif row == 2:
+            gauge = generate_gauge_qoqtarget_model(df)
+        else:
+            gauge = generate_gauge_yoytarget_model(df)
+        multi_gauge.add_trace(gauge, row=row, col=col)
+    # Update layout to add a main title
+    multi_gauge.update_layout(
+                        plot_bgcolor= '#000000',
+                        paper_bgcolor = '#FFFFFF',
+                        font_color = '#025E70',
+                        font_family = 'arial',
+                        title_text=f"<b>Profit Targets 2024</b>",
+                        title_x=0.5,  # Center the main title
+                        title_font=dict(
+ #               family="Arial",  # Specify the font family
+                                size=18,         # Specify the font size
+                                color= '#025E70',     # Specify the font color
+                                ),
+                        margin=dict(t=80)  # Adjust the top margin to make room for the main title
+                        )    
+    return multi_gauge
