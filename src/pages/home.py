@@ -110,7 +110,7 @@ layout = html.Div(
                                                     ),
                                                  ]),
                                            card_title_img),
-                    html.Div(style = {'height':'5px'}),
+                    html.Div(style = {'height':'20px'}),
                     create_titled_card('Choose Trading Sessions',
                                               dbc.Card(
                                                   dbc.CardBody([
@@ -150,13 +150,13 @@ layout = html.Div(
                                                            dbc.Col(width=1),
                                                            dbc.Col([                                
                                                                dbc.Card([
-                                                                   html.H2(id = 'perf', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'perf', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Performance', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
                                                                html.Br(),
                                                                dbc.Card([
-                                                                   html.H2(id = 'winrate', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'winrate', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('% Winning Trades', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    ], style = kpi_style),
                                                                html.Br(),
@@ -164,13 +164,13 @@ layout = html.Div(
                                                                ], width = 2),
                                                            dbc.Col([
                                                                dbc.Card([
-                                                                   html.H2(id = 'sharpe', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'sharpe', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Sharpe Ratio', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
                                                                html.Br(),
                                                                dbc.Card([
-                                                                   html.H2(id = 'windays', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'windays', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('% Winning Days', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
@@ -178,25 +178,25 @@ layout = html.Div(
                                                                ], width = 2),
                                                            dbc.Col([
                                                                dbc.Card([
-                                                                   html.H2(id = 'pr', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'pr', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Profit Ratio', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
                                                                html.Br(),
                                                                dbc.Card([
-                                                                   html.H2(id = 'winmonths', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'winmonths', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('% Winning Months', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    ], style = kpi_style),
                                                                ], width = 2),
                                                            dbc.Col([
                                                                dbc.Card([
-                                                                   html.H2(id = 'dd', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'dd', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Max DrawDown', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
                                                                html.Br(),
                                                                dbc.Card([
-                                                                   html.H2(id = 'bestday', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'bestday', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Best Day', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
@@ -204,12 +204,12 @@ layout = html.Div(
                                                                ], width = 2),
                                                            dbc.Col([
                                                                dbc.Card([
-                                                                   html.H2(id = 'trades', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'trades', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Avg Trades per day', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    ], style = kpi_style),
                                                                html.Br(),
                                                                dbc.Card([
-                                                                   html.H2(id = 'worstday', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
+                                                                   html.H3(id = 'worstday', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}),
                                                                    html.H6('Worst Day', style={'color':'#FFFFFF', 'margin-left':'10px'}),
                                                                    html.Br(),
                                                                    ], style = kpi_style),
