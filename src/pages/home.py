@@ -49,6 +49,7 @@ card_title_img = 'linear-gradient(to left, rgba(1,139,180,0.75), rgba(0,0,0,1))'
 
 kpi_style = {'background-image': background_img,
              'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+             'height':'10vh'
              }
 
 # Define a function to create a titled card
@@ -70,7 +71,7 @@ layout = html.Div(
                 'background-image': background_img,  # Specify the path to your image file
                 'background-size': 'cover',  # Cover the entire container
                 'background-position': 'center',  # Center the background image
-  #              'height': '100vh',  # Set the height to full viewport height
+                'height': '100vh',  # Set the height to full viewport height
             },
     children = [
     dbc.Card(
@@ -216,7 +217,7 @@ layout = html.Div(
                                                            ], width = 2),
                                                            ]),
                                                        ]),                                           
-                                                   card_title_img), width = 12),
+                                                   card_title_img, height='21rem'), width = 12),
                 
                         ]),
                     html.Br(),
@@ -227,7 +228,7 @@ layout = html.Div(
                     
                     ], width=6),
                 dbc.Col([
-                    create_titled_card('Weekly performance', dcc.Graph(id='graph-2', figure = {}, style={'height':'100%'}), card_title_img, height='20rem'),
+                    create_titled_card('Weekly performance', dcc.Graph(id='graph-2', figure = {}, style={'height':'100%'}), card_title_img, height='21rem'),
                     html.Br(),
                     create_titled_card('Last 20 Tradingdays performance', dcc.Graph(id='graph-3', figure = {}), card_title_img),                         
                     ], width=4),
