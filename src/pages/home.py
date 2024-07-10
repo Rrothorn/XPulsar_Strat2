@@ -34,7 +34,7 @@ dash.register_page(__name__, path='/')
 
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
-fname = 'dataDTmix.csv'
+fname = 'DCbeststop.csv'
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
 df_l = df.copy()
 df = df[df.index > '01-01-2024']
@@ -276,8 +276,8 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     
     # Redefining df to exclude days on basis of cutt_off selection
     cut_off = selected_stop / 100
-    dfD = df.resample('D').agg({'pnl_ac':'sum'})
-    dfD = dfD[dfD.pnl_ac.shift(1) > cut_off]
+    dfD = df.resample('D').agg({'pnl_best':'sum'})
+    dfD = dfD[dfD.pnl_best.shift(1) > cut_off]
     
     excluded_dates = dfD.index.normalize()
     dff = df[~df.index.normalize().isin(excluded_dates)]
@@ -299,10 +299,12 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     # set timeframe and recalculate pnls
     dfc = dff[(dff.index.hour >= start_hour) & (dff.index.hour <= end_hour)]
     
-    dfc['pnl_ac'][dfc.pnl != 0] = dfc.pnl - cost - slip
+    dfc['pnl_ac'] = 0
+    dfc['pnl_ac'][dfc.pnl_best != 0] = dfc.pnl_best - cost - slip
     dfc['cr_ac'] = dfc.pnl_ac.cumsum() + 1
     dfc['pnl_plus'] = dfc.pnl_ac * dfc.cr_ac
     dfc['cr_plus'] = dfc.pnl_plus.cumsum() + 1
+
     
     # Generate interactive graphs and card values.
     figln = hl.generate_line_shaded(dfc)  

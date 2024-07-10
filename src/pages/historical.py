@@ -32,26 +32,33 @@ dash.register_page(__name__)
 
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
-fname = 'dataDTmix.csv'
+fname = 'DCbeststop.csv'
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
 df = df[df.index < '01-01-2024']
 
+print(df.pnl_best.sum())
+
 # unlike on the main page we have selected a close to optimal cutoff pnl of 0.6% on the previous trading day
 selected_pnl = 0.006
-dfD = df.resample('D').agg({'pnl_ac':'sum'})
-dfD = dfD[dfD.pnl_ac.shift(1) > selected_pnl]
+dfD = df.resample('D').agg({'pnl_best':'sum'})
+dfD = dfD[dfD.pnl_best != 0]
+dfD = dfD[dfD.pnl_best.shift(1) > selected_pnl]
+print(dfD[-30:].pnl_best.sum())
     
 # here we exclude all trading days where the previous day was > cutt-off
 excluded_dates = dfD.index.normalize()
+#print(excluded_dates)
 dff = df[~df.index.normalize().isin(excluded_dates)]
 
 # unlike on main page we have select realistic cost and slippage
 cost = 0.1/10000
 slip = 0.5/(19000)  # divided by value of 1 nasdaq future 
-dff['pnl_ac'][dff.pnl != 0] = dff.pnl - cost - slip
+dff['pnl_ac'] = 0
+dff['pnl_ac'][dff.pnl_best != 0] = dff.pnl_best - cost - slip
 dff['cr_ac'] = dff.pnl_ac.cumsum() + 1
 dff['pnl_plus'] = dff.pnl_ac * dff.cr_ac
 dff['cr_plus'] = dff.pnl_plus.cumsum() + 1
+print(dff.pnl_plus.sum())
 
 # for the dash_table we need to name and id columns
 table1_columns = ['Year','Q1','Q2','Q3','Q4']
@@ -258,6 +265,7 @@ def update_page1(y2022, y2023, total):
     dfc['cr_ac'] = dfc.pnl_ac.cumsum() + 1
     dfc['pnl_plus'] = dfc.pnl_ac * dfc.cr_ac
     dfc['cr_plus'] = dfc.pnl_plus.cumsum() + 1
+    print(dfc.pnl_plus.sum())
 
     # Generating elements on page    
     figln = hl.generate_line_shaded(dfc)  

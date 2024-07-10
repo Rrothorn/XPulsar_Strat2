@@ -384,7 +384,7 @@ def generate_QDDtable(df):
 
 def generate_gauge_yoytarget_model(dfg):
     year = 2024
-    target = 0.36
+    target = 0.40
     
     #get current and previous years sales
     start_date = str(year) + '-01-01'
@@ -413,7 +413,7 @@ def generate_gauge_yoytarget_model(dfg):
                 'bar': {'color': bar_color},  
         #        'shape':'angular',
                 'steps' : [{'range': [0, 1.35 * target], 'color': '#FFFFFF'},],
-                'threshold' : {'line': {'color': '#000000', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
+                'threshold' : {'line': {'color': 'red', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
                 },
        )
   
@@ -423,12 +423,12 @@ def generate_gauge_yoytarget_model(dfg):
 def generate_gauge_qoqtarget_model(dfg):
     
     #get current and previous years sales
-    start_date = '2024-03-31'
-    end_date =  '2024-07-01'   
+    start_date = '2024-06-30'
+    end_date =  '2024-10-01'   
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_plus'].sum() 
     
-    profit_target = 0.09 
+    profit_target = 0.1 
     
     if cur_profit/profit_target < 0.75:
         bar_color = '#2CC3E3'
@@ -449,7 +449,7 @@ def generate_gauge_qoqtarget_model(dfg):
                 'bar': {'color': bar_color},  
         #        'shape':'angular',
                 'steps' : [{'range': [0, profit_target * 1.35], 'color': '#FFFFFF'},],
-                'threshold' : {'line': {'color': 'black', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
+                'threshold' : {'line': {'color': 'red', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
                 },
        )
   
@@ -459,12 +459,12 @@ def generate_gauge_qoqtarget_model(dfg):
 def generate_gauge_momtarget_model(dfg):
     
     #get current and previous years sales
-    start_date = '2024-05-31'
-    end_date =  '2024-07-01'   
+    start_date = '2024-06-30'
+    end_date =  '2024-08-01'   
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_plus'].sum() 
     
-    profit_target = 0.03
+    profit_target = 0.033
     
     if cur_profit/profit_target < 0.75:
         bar_color = '#2CC3E3'
@@ -485,7 +485,7 @@ def generate_gauge_momtarget_model(dfg):
                 'bar': {'color': bar_color},  
         #        'shape':'angular',
                 'steps' : [{'range': [0, profit_target * 1.35], 'color': '#FFFFFF'},],
-                'threshold' : {'line': {'color': 'black', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
+                'threshold' : {'line': {'color': 'red', 'width': 4}, 'thickness': 0.75, 'value': profit_target},
                 },
        )
   
