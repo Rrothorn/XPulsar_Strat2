@@ -125,3 +125,36 @@ Created on Sat May 25 00:04:20 2024
 .responsive-card-value {
     font-size: 1.3vw; /* Adjust as necessary for your needs */
 }
+
+.responsive-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.responsive-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.responsive-table th, .responsive-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 600px) {
+  .responsive-table th, .responsive-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-table th {
+    background-color: #f2f2f2;
+  }
+
+  .responsive-table td {
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+}

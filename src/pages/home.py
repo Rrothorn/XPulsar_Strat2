@@ -130,7 +130,8 @@ layout = html.Div(
                                                       )                                      
                                                   ), card_title_img),
                     html.Br(),
-                    create_titled_card('Last Trades', dash_table.DataTable(
+                    create_titled_card('Last Trades', html.Div(
+                                                        dash_table.DataTable(
                                                             id='table-1',
                                                             data=hl.generate_table(df).to_dict('records'),
                                                             columns=[{'name': col, 'id': col} for col in table1_columns],
@@ -141,7 +142,9 @@ layout = html.Div(
                                                                 'font-family':'sans-serif',
                                                                 },
                                                             page_size = 7,
-                                                            ), card_title_img),
+                                                            ), className='responsive-table-wrapper'
+                                                        ),
+                                                        card_title_img),
                     ], width = 2),
                 dbc.Col([
                     dbc.Row([
@@ -223,16 +226,16 @@ layout = html.Div(
                         ]),
                     html.Br(),
                     dbc.Row([
-                        dbc.Col(create_titled_card('YTD Performance', dcc.Graph(id='graph-1', figure = {}), card_title_img), width=8),
-                        dbc.Col(create_titled_card('Performance Targets', dcc.Graph(id= 'graph-gauge', figure = {}), card_title_img), width=4),
+                        dbc.Col(create_titled_card('YTD Performance', dcc.Graph(id='graph-1', figure = {}), card_title_img), width=7),
+                        dbc.Col(create_titled_card('Performance Targets', dcc.Graph(id= 'graph-gauge', figure = {}), card_title_img), width=5),
                         ])
                     
-                    ], width=6),
+                    ], width=7),
                 dbc.Col([
                     create_titled_card('Weekly performance', dcc.Graph(id='graph-2', figure = {}, style={'height':'100%'}), card_title_img, height='21rem'),
                     html.Br(),
                     create_titled_card('Last 20 Tradingdays performance', dcc.Graph(id='graph-3', figure = {}), card_title_img),                         
-                    ], width=4),
+                    ], width=3),
                 ], className="equal-height", style={"margin-right": "15px", "margin-left": "15px"}),
             ], style = {'background-image': background_img,}  # Specify the path to your image file
             ) # CLOSING CARDBODY
