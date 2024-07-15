@@ -117,3 +117,11 @@ Created on Sat May 25 00:04:20 2024
 .equal-height > .col > .card {
     flex: 1;
 }
+
+.responsive-card-text {
+    font-size: 0.8vw; /* Adjust as necessary for your needs */
+}
+
+.responsive-card-value {
+    font-size: 1.3vw; /* Adjust as necessary for your needs */
+}
