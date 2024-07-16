@@ -6,6 +6,11 @@ Created on Sat May 25 00:04:20 2024
 """
 
 /* custom.css */
+body {
+    margin: 0;
+    padding: 0;
+}
+
 
 /* Change the background color of the navbar */
 .nav-item {
