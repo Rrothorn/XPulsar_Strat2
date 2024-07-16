@@ -150,7 +150,7 @@ layout = html.Div(
                                        card_title_img,
                                        height = '42vh'
                                        )
-                    ], width = 3),
+                    ],  xs=12, sm=12, md=3, lg=3, xl=3),
                 dbc.Col([
                     create_titled_card('Historical Performance', dcc.Graph(id='graph-1-2', figure = {}), card_title_img),
                     html.Br(),
