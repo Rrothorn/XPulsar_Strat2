@@ -130,6 +130,13 @@ Created on Sat May 25 00:04:20 2024
     font-size: 1.4vw; /* Adjust as necessary for your needs */
 }
 
+/* Specific styles for mobile devices */
+@media (max-width: 600px) {
+    .responsive-card-value {
+        font-size: 1.5rem; /* Smaller size for mobile */
+    }
+}
+
 .responsive-table-wrapper {
   width: 100%;
   overflow-x: auto;

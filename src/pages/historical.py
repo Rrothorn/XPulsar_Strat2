@@ -190,13 +190,13 @@ layout = html.Div(
                                                                 },
                                                             ), card_title_img), 
                     
-                    ], width=5),
+                    ],  xs=12, sm=12, md=5, lg=5, xl=5),
 
                 dbc.Col([
                     create_titled_card('Monthly performance', dcc.Graph(id='graph-2-2', figure = {}), card_title_img),
                     html.Br(),
                     create_titled_card('Weekly performance', dcc.Graph(id='graph-3-2', figure = {}), card_title_img),
-                    ],width=4),
+                    ],  xs=12, sm=12, md=4, lg=4, xl=4),
                 ], className="equal-height", style={"margin-right": "15px", "margin-left": "15px"}),
             # ROW 2
             ], style = {'background-image': background_img,}  # Specify the path to your image file
