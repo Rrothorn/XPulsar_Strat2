@@ -49,7 +49,7 @@ card_title_img = 'linear-gradient(to left, rgba(1,139,180,0.75), rgba(0,0,0,1))'
 
 kpi_style = {'background-image': background_img,
              'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-             'height':'10vh'
+             'height':'7rem'
              }
 
 # Define a function to create a titled card
@@ -71,8 +71,7 @@ layout = html.Div(
                 'background-image': background_img,  # Specify the path to your image file
                 'background-size': 'cover',  # Cover the entire container
                 'background-position': 'center',  # Center the background image
-                'height': '100vh',  # Set the height to full viewport height
-                'fluid':True
+ #               'height': '100vh',  # Set the height to full viewport height
             },
     children = [
     dbc.Card(
@@ -157,7 +156,7 @@ layout = html.Div(
                                                                    html.H3(id = 'perf', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}, className='responsive-card-value'),
                                                                    html.H6('Performance', style={'color':'#FFFFFF', 'margin-left':'10px'}, className='responsive-card-text'),
                                                                    html.Br(),
-                                                                   ], style = kpi_style),
+                                                                   ], style = kpi_style, className='equal-height'),
                                                                html.Br(),
                                                                dbc.Card([
                                                                    html.H3(id = 'winrate', style = {'color':colors_config['colors']['palet'][4], 'margin-left':'10px'}, className='responsive-card-value'),
@@ -281,6 +280,7 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     # Redefining df to exclude days on basis of cutt_off selection
     cut_off = selected_stop / 100
     dfD = df.resample('D').agg({'pnl_best':'sum'})
+    dfD = dfD[dfD.pnl_best != 0]
     dfD = dfD[dfD.pnl_best.shift(1) > cut_off]
     
     excluded_dates = dfD.index.normalize()

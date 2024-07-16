@@ -126,6 +126,10 @@ Created on Sat May 25 00:04:20 2024
     font-size: 1.3vw; /* Adjust as necessary for your needs */
 }
 
+.responsive-histcard-value {
+    font-size: 1.4vw; /* Adjust as necessary for your needs */
+}
+
 .responsive-table-wrapper {
   width: 100%;
   overflow-x: auto;
