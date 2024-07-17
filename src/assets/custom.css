@@ -123,21 +123,71 @@ body {
     flex: 1;
 }
 
+/* Default alignment for larger screens */
+.logo-img {
+    float: right;
+    margin-top: 3px;
+    margin-right: 20px;
+}
+
+/* Center the logo on smaller screens */
+@media (max-width: 576px) {
+    .logo-img {
+        float: none;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
+.responsive-title {
+    font-size: 1.8vw;
+}
+
+@media (max-width: 800px) {
+    .responsive-title {
+        font-size: 1.2rem;
+    }
+}
+
+.responsive-subtitle {
+    font-size: 1.1vw;
+}
+
+@media (max-width: 800px) {
+    .responsive-subtitle {
+        font-size: 1rem;
+    }
+}
+
 .responsive-card-text {
     font-size: 0.8vw; /* Adjust as necessary for your needs */
 }
 
+@media (max-width: 800px) {
+    .responsive-card-text {
+        font-size: 0.8rem; /* Smaller size for mobile */
+    }
+}
 .responsive-card-value {
     font-size: 1.3vw; /* Adjust as necessary for your needs */
+}
+
+/* Specific styles for mobile devices */
+@media (max-width: 800px) {
+    .responsive-card-value {
+        font-size: 1rem; /* Smaller size for mobile */
+    }
 }
 
 .responsive-histcard-value {
     font-size: 1.4vw; /* Adjust as necessary for your needs */
 }
 
+
+
 /* Specific styles for mobile devices */
-@media (max-width: 600px) {
-    .responsive-card-value {
+@media (max-width: 800px) {
+    .responsive-histcard-value {
         font-size: 1.5rem; /* Smaller size for mobile */
     }
 }

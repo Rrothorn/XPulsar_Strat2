@@ -70,15 +70,14 @@ navbar= dbc.Navbar(
                 html.Div([
                     # Heading is in the navbar as there is enough space for it
                     html.H1('Tracking the Nasdaq-100 Index Futures',
-                            className='text-center text-primary, mb-2',
-                            style={'font-size': '28px',
+                            className='responsive-title',
+                            style={
                                     'color': colors_config['colors']['palet'][4],
                                     'margin_bottom': '0px',
-                                    'width': '100%'  # Span the entire width
                                     }),
                     html.H2('An AI-powered Intraday Machine Learning algorithm',
-                            className='text-center text-primary, mb-4',
-                            style={'font-size': '18px', 'color': colors_config['colors']['palet'][4], 'width': '100%'}),  # Span the entire width
+                            className='responsive-subtitle',
+                            style={'color': colors_config['colors']['palet'][4], 'width': '100%'}),  # Span the entire width
                     ],),
                 ], 
                 width = 'auto',
@@ -88,7 +87,7 @@ navbar= dbc.Navbar(
             # Logo on the right
             dbc.Col([
                 html.Div([
-                    html.Img(src='assets/CAPITAL3.png', height='100vh', style={'float': 'right', 'margin-top': '3px', 'margin-right': '20px'}),
+                    html.Img(src='assets/CAPITAL3.png', height='100vh', className='logo-img'),
                 ], style={'width': '100%'})
             ], width=2, className="ml-auto"),  # Use className="ml-auto" to push the logo to the right
         ], fluid=True),

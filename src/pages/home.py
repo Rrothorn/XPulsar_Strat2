@@ -85,8 +85,8 @@ layout = html.Div(
                                                 dcc.Slider(
                                                     id='stop-slider',
                                                     min=0,
-                                                    max=1,
-                                                    step=0.1,
+                                                    max=1.25,
+                                                    step=0.25,
                                                     value=0.5,
                                        #             marks={i: str(i) for i in range(0.15, 0.4)},
                                                     ),

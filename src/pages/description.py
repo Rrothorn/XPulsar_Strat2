@@ -32,7 +32,9 @@ def create_titled_card(title, content, color_title, color_card):
         ]
     )
 
-layout =  html.Div(style={'background-image': background_img, 'height': '100vh'},
+layout =  html.Div(style={'background-image': background_img, 
+                          #'height': '100vh'
+                          },
                       children=[
     dbc.Container([
         html.Div(style={'height': '25px'}),
@@ -59,7 +61,8 @@ layout =  html.Div(style={'background-image': background_img, 'height': '100vh'}
                                          style={'color': '#95D7E0'}
                                          ),
                                   card_title_img, card_bg_img),
-                ], width = 5),
+                html.Br(),
+                ], xs=12, sm=12, md=5, lg=5, xl=5),
 
             dbc.Col([
                 create_titled_card('DashBoard Interactivity',
@@ -94,7 +97,7 @@ layout =  html.Div(style={'background-image': background_img, 'height': '100vh'}
                                        ]),
                                    card_title_img, card_bg_img2),
 
-                ], width = 5),
+                ], xs=12, sm=12, md=5, lg=5, xl=5),
             
             
             ]),
