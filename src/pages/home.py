@@ -34,7 +34,7 @@ dash.register_page(__name__, path='/')
 
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
-fname = 'DC_NQ24.csv'
+fname = 'NQ_24.csv'
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
 df_l = df.copy()
 df = df[df.index > '01-01-2024']
@@ -87,7 +87,7 @@ layout = html.Div(
                                                     min=0,
                                                     max=1.25,
                                                     step=0.25,
-                                                    value=0.5,
+                                                    value=0.75,
                                        #             marks={i: str(i) for i in range(0.15, 0.4)},
                                                     ),
                                                 html.Hr(),
