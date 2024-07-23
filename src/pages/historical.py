@@ -33,17 +33,20 @@ dash.register_page(__name__)
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
 fname = 'DC_NQhistorical.csv'
+fname = 'nq2223_cvo.csv'
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
 df = df[df.index < '01-01-2024']
 
-print(df.pnl_best.sum())
+#print(df.pnl_best.sum())
+
+pnlcol = 'pnl_stop3'
 
 # unlike on the main page we have selected a close to optimal cutoff pnl of 0.6% on the previous trading day
 selected_pnl = 0.006
-dfD = df.resample('D').agg({'pnl_best':'sum'})
-dfD = dfD[dfD.pnl_best != 0]
-dfD = dfD[dfD.pnl_best.shift(1) > selected_pnl]
-print(dfD[-30:].pnl_best.sum())
+dfD = df.resample('D').agg({pnlcol:'sum'})
+dfD = dfD[dfD[pnlcol] != 0]
+dfD = dfD[dfD[pnlcol].shift(1) > selected_pnl]
+#print(dfD[-30:].pnl_best.sum())
     
 # here we exclude all trading days where the previous day was > cutt-off
 excluded_dates = dfD.index.normalize()
@@ -54,11 +57,11 @@ dff = df[~df.index.normalize().isin(excluded_dates)]
 cost = 0.1/10000
 slip = 0.5/(19000)  # divided by value of 1 nasdaq future 
 dff['pnl_ac'] = 0
-dff['pnl_ac'][dff.pnl_best != 0] = dff.pnl_best - cost - slip
+dff['pnl_ac'][dff[pnlcol] != 0] = dff[pnlcol] - cost - slip
 dff['cr_ac'] = dff.pnl_ac.cumsum() + 1
 dff['pnl_plus'] = dff.pnl_ac * dff.cr_ac
 dff['cr_plus'] = dff.pnl_plus.cumsum() + 1
-print(dff.pnl_plus.sum())
+#print(dff.pnl_plus.sum())
 
 # for the dash_table we need to name and id columns
 table1_columns = ['Year','Q1','Q2','Q3','Q4']
