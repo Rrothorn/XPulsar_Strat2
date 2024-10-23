@@ -384,7 +384,7 @@ def generate_QDDtable(df):
 
 def generate_gauge_yoytarget_model(dfg):
     year = 2024
-    target = 0.52
+    target = 0.36
     
     #get current and previous years sales
     start_date = str(year) + '-01-01'
@@ -428,7 +428,7 @@ def generate_gauge_qoqtarget_model(dfg):
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_plus'].sum() 
     
-    profit_target = 0.13 
+    profit_target = 0.09 
     
     if cur_profit/profit_target < 0.75:
         bar_color = '#2CC3E3'
@@ -464,7 +464,7 @@ def generate_gauge_momtarget_model(dfg):
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_plus'].sum() 
     
-    profit_target = 0.043
+    profit_target = 0.03
     
     if cur_profit/profit_target < 0.75:
         bar_color = '#2CC3E3'
