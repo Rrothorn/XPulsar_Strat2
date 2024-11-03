@@ -423,8 +423,8 @@ def generate_gauge_yoytarget_model(dfg):
 def generate_gauge_qoqtarget_model(dfg):
     
     #get current and previous years sales
-    start_date = '2024-06-30'
-    end_date =  '2024-10-01'   
+    start_date = '2024-09-30'
+    end_date =  '2024-12-31'   
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_plus'].sum() 
     
@@ -459,8 +459,8 @@ def generate_gauge_qoqtarget_model(dfg):
 def generate_gauge_momtarget_model(dfg):
     
     #get current and previous years sales
-    start_date = '2024-08-31'
-    end_date =  '2024-10-01'   
+    start_date = '2024-09-30'
+    end_date =  '2024-11-01'   
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_plus'].sum() 
     
