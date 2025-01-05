@@ -43,6 +43,11 @@ df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetim
 df_l = df.copy()
 df = df[df.index > '01-01-2024']
 
+df_t5 = pd.read_csv('../NQtype5.csv')
+t5list = list(df_t5.Date)
+t5list = pd.to_datetime(t5list).date
+
+
 
 
 # some definitions for readability
@@ -290,6 +295,10 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     
     excluded_dates = dfD.index.normalize()
     dff = df[~df.index.normalize().isin(excluded_dates)]
+    print(dff.index[-20:])
+    dff = dff[~np.isin(dff.index.date, t5list)]
+    print(dff.index[-20:])
+    print(t5list[-5:])
     
     # Redefine df on basis of cost, slippage and timeperiod
     cost = selected_cost/10000
