@@ -38,6 +38,11 @@ fname = 'nq24_cvo.csv'
 fname = 'nq24_dynstop.csv'
 fname = 'nq_24_dynstop_vol.csv'
 fname = 'NQ_YTD24.csv'
+fname = 'nq_ir.csv'
+fname = 'nq_mom.csv'
+#fname = 'NQ15m_v2.csv'
+
+
 
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
 df_l = df.copy()
@@ -93,10 +98,10 @@ layout = html.Div(
                                                 html.H6("Adjust Cutoff to Pause Trading"),
                                                 dcc.Slider(
                                                     id='stop-slider',
-                                                    min=0,
-                                                    max=1.25,
+                                                    min=0.75,
+                                                    max=2,
                                                     step=0.25,
-                                                    value=0.75,
+                                                    value=1.25,
                                        #             marks={i: str(i) for i in range(0.15, 0.4)},
                                                     ),
                                                 html.Hr(),
@@ -334,9 +339,9 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     avgtr = hl.AvgTrades(dfc)
     sharpe = hl.Sharpe(dfc.pnl_plus)
     pr = hl.ProfitRatio(dfc.pnl_plus)
-    dd = hl.DrawDown(dfc.pnl_plus)
-    bestday = hl.MaxWinDay(dfc.pnl_plus)
-    worstday = hl.MaxLossDay(dfc.pnl_plus)
+    dd = hl.DrawDown(dfc.pnl_ac)
+    bestday = hl.MaxWinDay(dfc.pnl_ac)
+    worstday = hl.MaxLossDay(dfc.pnl_ac)
     
     bars = hl.generate_weekly_bars(dfc)
     bars2 = hl.generate_last20days(dfc)
