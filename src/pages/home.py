@@ -34,11 +34,7 @@ dash.register_page(__name__, path='/')
 
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
-fname = 'nq24_cvo.csv'
-fname = 'nq24_dynstop.csv'
-fname = 'nq_24_dynstop_vol.csv'
-fname = 'NQ_YTD24.csv'
-fname = 'nq_ir.csv'
+
 fname = 'nq_mom.csv'
 #fname = 'NQ15m_v2.csv'
 
@@ -46,7 +42,7 @@ fname = 'nq_mom.csv'
 
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
 df_l = df.copy()
-df = df[df.index > '01-01-2024']
+df = df[df.index > '01-01-2025']
 
 df_t5 = pd.read_csv('../NQtype5.csv')
 t5list = list(df_t5.Date)

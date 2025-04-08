@@ -33,11 +33,10 @@ dash.register_page(__name__)
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
 
-fname = 'nq2223_cvo.csv'
-fname = 'nq22_dynstop.csv'
-fname = 'nq_22_23_dynstop_vol.csv'
+
+fname = 'nq_22_24_dynstop_vol.csv'
 df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
-df = df[df.index < '01-01-2024']
+df = df[df.index < '01-01-2025']
 
 #print(df.pnl_best.sum())
 
@@ -100,6 +99,7 @@ layout = html.Div(
                                            html.Div([
                                                dbc.Button('2022', id='y2022', n_clicks=0, style={'margin-left': '0px'}),
                                                dbc.Button('2023', id='y2023', n_clicks=0, style={'margin-left': '12px'}),
+                                               dbc.Button('2024', id='y2024', n_clicks=0, style={'margin-left': '12px'}),
                                                dbc.Button('TOTAL', id='total', n_clicks=0, style={'margin-left': '12px'}),
                                                  ]),
                                            card_title_img),
@@ -235,11 +235,12 @@ layout = html.Div(
      [
      Input('y2022', 'n_clicks'),
      Input('y2023', 'n_clicks'),
+     Input('y2024', 'n_clicks'),
      Input('total', 'n_clicks'),
      ],
      )
 
-def update_page1(y2022, y2023, total):
+def update_page1(y2022, y2023, y2024, total):
     
     ctx = dash.callback_context
     button_id = None
@@ -256,13 +257,17 @@ def update_page1(y2022, y2023, total):
         start_date = '01-01-2023'
         end_date = '31-12-2023'
         plot_title = '2023'
+    elif button_id == 'y2024':
+        start_date = '01-01-2024'
+        end_date = '31-12-2024'
+        plot_title = '2024'
     elif button_id == 'total':
         start_date = '01-01-2018'
-        end_date = '31-12-2023'
+        end_date = '31-12-2024'
         plot_title = 'Total'
     else:
         start_date = '01-01-2018'
-        end_date = '31-12-2023'
+        end_date = '31-12-2024'
         plot_title = 'Total' 
 
     dfc = dff[(dff.index >= start_date) & (dff.index <= end_date)]
