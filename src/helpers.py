@@ -70,10 +70,11 @@ def MaxLossDay(pnl):
     return "{:.2%}".format(pnlD.pnl_plus.min())
 
 def AvgTrades(df):
-    trades = len(df[df.pnl != 0])
+    trades = len(df[(df.pnl < 0)  | (df.pnl > 0)])
     dfD = df.resample('D').agg({'pnl_plus':'sum'})
     dfD = dfD[dfD.pnl_plus != 0]
     days = len(dfD)
+    print('trades/days', trades, days)
     return round(trades/days, 2)
 
 # Define the rounding function
@@ -99,10 +100,12 @@ def generate_line_shaded(df):
     # This generates a line plot for the YTD performance or capital growth
     # For visual effect we create a shaded fading area underneath the line by introducing shadow traces.
     # The shadowtraces are layers with ever increasing transparency
-    dfD = df.resample('D').agg({'pnl_plus':'sum', 'cr_plus':'last'})
+    dfD = df.resample('D').agg({'pnl_plus':'sum', 'cr_plus':'last', 'pnl1_plus':'sum', 'cr1_plus':'last', 'pnlr_plus':'sum', 'crr_plus':'last'})
     dfD = dfD[dfD.pnl_plus != 0]
     x = dfD.index
     y = dfD.cr_plus
+    y1 = dfD.cr1_plus
+    yr = dfD.crr_plus
     
     offset = 0.025
     y_shadow = y-0.03 * (y-1)
@@ -119,7 +122,174 @@ def generate_line_shaded(df):
         x=x, y=y,
         mode='lines',
         line=dict(color='#C44003', width=2),
-        name='Line',
+        name='Total',
+        )
+    line_trace2 = go.Scatter(
+        x=x, y=y1,
+        mode='lines',
+        line=dict(color='#33fdff', width=2),
+        name='Alpha1',
+        )    
+    line_trace3 = go.Scatter(
+        x=x, y=yr,
+        mode='lines',
+        line=dict(color='#337bff', width=2),
+        name='Alpha2',
+        )
+
+    # Create the shadow trace
+    shadow_trace = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y, y_shadow[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.35)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    )
+    
+    shadow_trace2 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow, y_shadow2[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.33)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    )
+    
+    shadow_trace3 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow2, y_shadow3[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.31)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    )
+    shadow_trace4 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow3, y_shadow4[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.28)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    )
+    shadow_trace5 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow4, y_shadow5[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.25)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    )
+    shadow_trace6 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow5, y_shadow6[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.22)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    ) 
+    shadow_trace7 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow6, y_shadow7[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.18)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    ) 
+    shadow_trace8 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow7, y_shadow8[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.14)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    ) 
+    shadow_trace9 = go.Scatter(
+        x=np.concatenate([x, x[::-1]]),
+        y=np.concatenate([y_shadow8, y_shadow9[::-1]]),
+        fill='toself',
+        fillcolor='rgba(196, 64, 3, 0.1)',  # Adjust the transparency for fading effect
+        line=dict(color='rgba(196, 64, 3, 0)', width=0),
+        showlegend=False
+    ) 
+    # Create the figure
+    fig = go.Figure()
+    
+    # Add the shadow trace first (so it is underneath the line)
+    fig.add_trace(shadow_trace9)
+    fig.add_trace(shadow_trace8)
+    fig.add_trace(shadow_trace7)
+    fig.add_trace(shadow_trace6)
+    fig.add_trace(shadow_trace5)
+    fig.add_trace(shadow_trace4)
+    fig.add_trace(shadow_trace3)
+    fig.add_trace(shadow_trace2)    
+    fig.add_trace(shadow_trace)
+    
+    # Add the line trace
+    fig.add_trace(line_trace)
+    fig.add_trace(line_trace2)
+    fig.add_trace(line_trace3)
+        
+    # Update layout for dark background and double y-axis
+    fig.update_layout(
+        plot_bgcolor='#000000',
+        paper_bgcolor='#FFFFFF',
+        font_color='#025E70',
+        font_family='verdana',  # Replace with your font family if different
+        margin={'l':20, 'r':40, 't':50, 'b':10, 'pad':10},
+        title={'text':'<b>Growth of Capital</b>', 'x':0.5, 'y':0.98, 'font':{'size':16}},
+        xaxis={'title':'', 'showgrid':False},
+        yaxis={
+            'title':'Growth',
+            'tickformat': '.0%',
+            'showgrid':False,
+        },
+        yaxis2={
+            'title':'',  # Secondary y-axis title
+            'overlaying':'y',  # Overlay on the same plot
+            'side':'right',  # Place on the right side
+            'showgrid':False,
+            'tickvals': fig.layout.yaxis.tickvals if fig.layout.yaxis.tickvals else None  # Sync tick values
+        },
+        showlegend=True,
+        legend=dict(
+            orientation='v',
+            yanchor='top',
+            y=0.99,
+            xanchor='left',
+            x=0.01
+        ),
+    )
+    
+    return fig
+
+def generate_line_shaded_hist(df):
+    # This generates a line plot for the YTD performance or capital growth
+    # For visual effect we create a shaded fading area underneath the line by introducing shadow traces.
+    # The shadowtraces are layers with ever increasing transparency
+    dfD = df.resample('D').agg({'pnl_plus':'sum', 'cr_plus':'last'})
+    dfD = dfD[dfD.pnl_plus != 0]
+    x = dfD.index
+    y = dfD.cr_plus
+
+    
+    offset = 0.025
+    y_shadow = y-0.03 * (y-1)
+    y_shadow2 = y-0.06 * (y-1)
+    y_shadow3 = y-0.1 * (y-1)
+    y_shadow4 = y-0.15 * (y-1)
+    y_shadow5 = y-0.2 * (y-1)
+    y_shadow6 = y-0.25 * (y-1)
+    y_shadow7 = y-0.3 * (y-1)
+    y_shadow8 = y-0.4 * (y-1)
+    y_shadow9 = y-0.5 * (y-1)
+    # Create the line trace
+    line_trace = go.Scatter(
+        x=x, y=y,
+        mode='lines',
+        line=dict(color='#C44003', width=2),
+        name='Total',
         )
 
     # Create the shadow trace
@@ -236,9 +406,11 @@ def generate_line_shaded(df):
             'tickvals': fig.layout.yaxis.tickvals if fig.layout.yaxis.tickvals else None  # Sync tick values
         },
         showlegend=False,
+
     )
     
     return fig
+
 
 def generate_weekly_bars(df):
     dfW = df.resample('W').agg({'pnl_plus':'sum'})
@@ -318,7 +490,7 @@ def generate_histo(df):
     return fig
 
 def generate_table(df):
-    dfc = df[df.pnl_plus != 0][['buy_open','buy_close','sell_open','sell_close', 'pnl_plus']][-100:]
+    dfc = df[(df.pnl_plus < 0) | (df.pnl_plus > 0)][['buy_open','buy_close','sell_open','sell_close', 'pnl_plus']][-100:]
     dfc['B/S'] = 0
     dfc['B/S'][dfc.buy_open == 0] = 'SELL'
     dfc['B/S'][dfc.sell_open == 0] = 'BUY'
@@ -459,8 +631,8 @@ def generate_gauge_qoqtarget_model(dfg):
 def generate_gauge_momtarget_model(dfg):
     
     #get current and previous years sales
-    start_date = '2025-04-01'
-    end_date =  '2025-05-01'   
+    start_date = '2025-05-01'
+    end_date =  '2025-06-01'   
     dfc = dfg[(dfg.index > start_date) & (dfg.index < end_date)]
     cur_profit = dfc['pnl_ac'].sum() 
     
@@ -529,7 +701,7 @@ def generate_gauge_multimodel(df):
                         paper_bgcolor = '#FFFFFF',
                         font_color = '#025E70',
                         font_family = 'arial',
-                        title_text=f"<b>Profit Targets 2024</b>",
+                        title_text=f"<b>Profit Targets 2025</b>",
                         title_x=0.5,  # Center the main title
                         title_font=dict(
  #               family="Arial",  # Specify the font family

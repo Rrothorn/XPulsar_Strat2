@@ -275,10 +275,9 @@ def update_page1(y2022, y2023, y2024, total):
     dfc['cr_ac'] = dfc.pnl_ac.cumsum() + 1
     dfc['pnl_plus'] = dfc.pnl_ac * dfc.cr_ac
     dfc['cr_plus'] = dfc.pnl_plus.cumsum() + 1
-    print(dfc.pnl_plus.sum())
 
     # Generating elements on page    
-    figln = hl.generate_line_shaded(dfc)  
+    figln = hl.generate_line_shaded_hist(dfc)  
   
     performance = hl.Performance(dfc.pnl_plus)
     wr = hl.WinRate(dfc.pnl_plus)

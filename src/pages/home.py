@@ -35,21 +35,26 @@ dash.register_page(__name__, path='/')
 # downloading data containing all individual stock trades for the running year
 #fname = 'dataDT_daash.csv'
 
-fname = 'nq_mom.csv'
-#fname = 'NQ15m_v2.csv'
+fname1 = 'nq_mom.csv'
+fname2 = 'NQ_rev25.csv'
 
 
 
-df = pd.read_csv(f'../{fname}', parse_dates = ['datetime'], index_col = 'datetime')
-df_l = df.copy()
-df = df[df.index > '01-01-2025']
+df1 = pd.read_csv(f'../{fname1}', parse_dates = ['datetime'], index_col = 'datetime')
+df_l = df1.copy()
+df1 = df1[df1.index > '01-01-2025']
 
 df_t5 = pd.read_csv('../NQtype5.csv')
 t5list = list(df_t5.Date)
 t5list = pd.to_datetime(t5list).date
 
+df2 = pd.read_csv(f'../{fname2}', parse_dates = ['datetime'], index_col = 'datetime')
 
+df = pd.concat([df1, df2], axis=1)
+df['pnlr'] = df['pnlr'].fillna(0)
+#df['pnl'] = df['pnl'] + df['pnlr']
 
+print(df[['pnl','pnlr']].tail())
 
 # some definitions for readability
 table1_columns = ['date', 'B/S', 'Profit']
@@ -288,18 +293,28 @@ layout = html.Div(
 def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     
     # Redefining df to exclude days on basis of cutt_off selection
-    pnlcol = 'pnl'
+    pnlcol1 = 'pnl'
+    pnlcol2 = 'pnl1'
+    pnlcol3 = 'pnlr'
     cut_off = selected_stop / 100
-    dfD = df.resample('D').agg({pnlcol:'sum'})
-    dfD = dfD[dfD[pnlcol] != 0]
-    dfD = dfD[dfD[pnlcol].shift(1) > cut_off]
+    # dfD = df.resample('D').agg({pnlcol1:'sum', pnlcol2: 'sum'})
+    # dfD = dfD[dfD[pnlcol1] != 0]
+    # dfD[pnlcol1][dfD[pnlcol1].shift(1) > cut_off] = 0
+   
+    df.loc[df.index.normalize().isin([pd.Timestamp(d) for d in t5list]), 'pnl'] = 0
+    dff = df
+
+    dff['pnl1'] = dff['pnl']
+    dff['pnl'] = dff['pnl1'] + dff['pnlr']
+    print(dff)    
+    # excluded_dates = dfD.index.normalize()
+    # dff = df[~df.index.normalize().isin(excluded_dates)]
+    # #print(dff.index[-20:])
+    # dff = dff[~np.isin(dff.index.date, t5list)]
     
-    excluded_dates = dfD.index.normalize()
-    dff = df[~df.index.normalize().isin(excluded_dates)]
-    print(dff.index[-20:])
-    dff = dff[~np.isin(dff.index.date, t5list)]
-    print(dff.index[-20:])
-    print(t5list[-5:])
+    
+    #print(dff.index[-20:])
+    #print(t5list[-5:])
     
     # Redefine df on basis of cost, slippage and timeperiod
     cost = selected_cost/10000
@@ -317,13 +332,28 @@ def update_page1(selected_stop, selected_cost, selected_slip, selected_period):
     
     # set timeframe and recalculate pnls
     dfc = dff[(dff.index.hour >= start_hour) & (dff.index.hour <= end_hour)]
+    print(dfc[['pnl', 'pnl1', 'pnlr']])
     
-    dfc['pnl_ac'] = 0
-    dfc['pnl_ac'][dfc[pnlcol] != 0] = dfc[pnlcol] - cost - slip
+    dfc['pnl1_ac'] = 0
+    dfc['pnl1_ac'][dfc[pnlcol2] != 0] = dfc[pnlcol2] - cost - slip
+    dfc['cr1_ac'] = dfc.pnl1_ac.cumsum() + 1
+    dfc['pnl1_plus'] = dfc.pnl1_ac * dfc.cr1_ac
+    dfc['cr1_plus'] = dfc.pnl1_plus.cumsum() + 1
+
+    dfc['pnlr_ac'] = 0
+    dfc['pnlr_ac'][dfc[pnlcol3] != 0] = dfc[pnlcol3] - cost - 2*slip
+    dfc['crr_ac'] = dfc.pnlr_ac.cumsum() + 1
+    dfc['pnlr_plus'] = dfc.pnlr_ac * dfc.crr_ac
+    dfc['crr_plus'] = dfc.pnlr_plus.cumsum() + 1
+
+    dfc['pnl_ac'] = dfc['pnl1_ac'] + dfc['pnlr_ac']
     dfc['cr_ac'] = dfc.pnl_ac.cumsum() + 1
     dfc['pnl_plus'] = dfc.pnl_ac * dfc.cr_ac
     dfc['cr_plus'] = dfc.pnl_plus.cumsum() + 1
+    
+    dfc['pnl_plus'] = dfc['pnl'].fillna(0)
 
+    #  print(dfc.tail())
     
     # Generate interactive graphs and card values.
     figln = hl.generate_line_shaded(dfc)  
